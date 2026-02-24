@@ -142,11 +142,7 @@ app.post('/api/auth/signin', async (req, res) => {
       return res.status(400).json({ error: 'Email and password required' });
     }
     const user = await db.collection('users').findOne({ email: email.toLowerCase() });
-
-if (!user || user.password !== password) {
-  return res.status(401).json({ error: 'Invalid credentials' });
-}
-    if (!user) return res.status(401).json({ error: 'Invalid credentials' });
+    if (!user || user.password !== password) return res.status(401).json({ error: 'Invalid credentials' });
     const { password: _, ...userWithoutPassword } = user;
     const token = jwt.sign({ email: user.email, id: user.id }, JWT_SECRET, { expiresIn: '7d' });
     res.json({ user: userWithoutPassword, token });
